@@ -1,0 +1,7 @@
+{
+  "roleParent": "Elternteil",
+  "roleChild": "Kind",
+  "unknownRole": "Unbekannte Rolle",
+  "familyMembers": "Familienmitglieder",
+  "noMembersFound": "Keine Mitglieder gefunden."
+}

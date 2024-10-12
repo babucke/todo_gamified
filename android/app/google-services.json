@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "384560026912",
+    "project_id": "todo-gamified-d4655",
+    "storage_bucket": "todo-gamified-d4655.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:384560026912:android:bbb33d662a1aa593643345",
+        "android_client_info": {
+          "package_name": "com.example.todo_gamified"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "384560026912-f05pbheahj2db8qr5scbu8ffnh7j0kq2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.todo_gamified",
+            "certificate_hash": "a32e08e890ece181d89189ba6e8db5876415b64f"
+          }
+        },
+        {
+          "client_id": "384560026912-j23ms8so00lvej8kn2p87dk2dsfmeqnq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2l1fy5XSC2Q33UVMZ_zECxeNiHld0J5w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "384560026912-j23ms8so00lvej8kn2p87dk2dsfmeqnq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
