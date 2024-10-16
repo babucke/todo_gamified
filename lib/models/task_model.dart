@@ -1,69 +1,55 @@
+// lib/models/task_model.dart
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uuid/uuid.dart';
 
 class TaskModel {
-  final String taskId;
+  final String id;
   final String title;
   final String description;
-  final String assignedTo; // UID des Kindes
+  final String assignedTo;
   final DateTime dueDate;
+  final int xpValue;
   final bool isCompleted;
   final String? proofPhotoUrl;
-  final int xpValue;
+  final bool isDaily; // Neues Feld für tägliche Aufgaben
 
   TaskModel({
-    required this.taskId,
+    required this.id,
     required this.title,
     required this.description,
     required this.assignedTo,
     required this.dueDate,
-    this.isCompleted = false,
-    this.proofPhotoUrl,
     required this.xpValue,
+    required this.isCompleted,
+    this.proofPhotoUrl,
+    required this.isDaily, // Neuer Parameter
   });
 
-  // Methode zum Erstellen einer neuen Aufgabe mit UUID
-  factory TaskModel.create({
-    required String title,
-    required String description,
-    required String assignedTo,
-    required DateTime dueDate,
-    required int xpValue,
-  }) {
-    var uuid = Uuid();
+  factory TaskModel.fromDocument(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return TaskModel(
-      taskId: uuid.v4(),
-      title: title,
-      description: description,
-      assignedTo: assignedTo,
-      dueDate: dueDate,
-      xpValue: xpValue,
-    );
-  }
-
-  factory TaskModel.fromMap(Map<String, dynamic> data) {
-    return TaskModel(
-      taskId: data['taskId'],
-      title: data['title'],
-      description: data['description'],
-      assignedTo: data['assignedTo'],
+      id: doc.id,
+      title: data['title'] ?? '',
+      description: data['description'] ?? '',
+      assignedTo: data['assignedTo'] ?? '',
       dueDate: (data['dueDate'] as Timestamp).toDate(),
+      xpValue: data['xpValue'] ?? 0,
       isCompleted: data['isCompleted'] ?? false,
       proofPhotoUrl: data['proofPhotoUrl'],
-      xpValue: data['xpValue'],
+      isDaily: data['isDaily'] ?? false, // Neues Feld
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'taskId': taskId,
       'title': title,
       'description': description,
       'assignedTo': assignedTo,
       'dueDate': dueDate,
+      'xpValue': xpValue,
       'isCompleted': isCompleted,
       'proofPhotoUrl': proofPhotoUrl,
-      'xpValue': xpValue,
+      'isDaily': isDaily, // Neues Feld
     };
   }
 }

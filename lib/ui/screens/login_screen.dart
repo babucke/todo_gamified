@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../blocs/authentication/authentication_bloc.dart';
 import '../../blocs/authentication/authentication_event.dart';
 import '../../blocs/authentication/authentication_state.dart';
-import '../../utils/enums.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
