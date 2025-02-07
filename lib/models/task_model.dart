@@ -1,5 +1,3 @@
-// lib/models/task_model.dart
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TaskModel {
@@ -7,22 +5,26 @@ class TaskModel {
   final String title;
   final String description;
   final String assignedTo;
+  final String assignedBy;
   final DateTime dueDate;
   final int xpValue;
   final bool isCompleted;
+  final bool isApproved;
   final String? proofPhotoUrl;
-  final bool isDaily; // Neues Feld für tägliche Aufgaben
+  final bool isDaily;
 
   TaskModel({
     required this.id,
     required this.title,
     required this.description,
     required this.assignedTo,
+    required this.assignedBy,
     required this.dueDate,
     required this.xpValue,
     required this.isCompleted,
+    required this.isApproved,
     this.proofPhotoUrl,
-    required this.isDaily, // Neuer Parameter
+    required this.isDaily,
   });
 
   factory TaskModel.fromDocument(DocumentSnapshot doc) {
@@ -32,11 +34,13 @@ class TaskModel {
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       assignedTo: data['assignedTo'] ?? '',
+      assignedBy: data['assignedBy'] ?? '',
       dueDate: (data['dueDate'] as Timestamp).toDate(),
       xpValue: data['xpValue'] ?? 0,
       isCompleted: data['isCompleted'] ?? false,
+      isApproved: data['isApproved'] ?? false,
       proofPhotoUrl: data['proofPhotoUrl'],
-      isDaily: data['isDaily'] ?? false, // Neues Feld
+      isDaily: data['isDaily'] ?? false,
     );
   }
 
@@ -45,11 +49,41 @@ class TaskModel {
       'title': title,
       'description': description,
       'assignedTo': assignedTo,
+      'assignedBy': assignedBy,
       'dueDate': dueDate,
       'xpValue': xpValue,
       'isCompleted': isCompleted,
+      'isApproved': isApproved,
       'proofPhotoUrl': proofPhotoUrl,
-      'isDaily': isDaily, // Neues Feld
+      'isDaily': isDaily,
     };
+  }
+
+  TaskModel copyWith({
+    String? id,
+    String? title,
+    String? description,
+    String? assignedTo,
+    String? assignedBy,
+    DateTime? dueDate,
+    int? xpValue,
+    bool? isCompleted,
+    bool? isApproved,
+    String? proofPhotoUrl,
+    bool? isDaily,
+  }) {
+    return TaskModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      assignedTo: assignedTo ?? this.assignedTo,
+      assignedBy: assignedBy ?? this.assignedBy,
+      dueDate: dueDate ?? this.dueDate,
+      xpValue: xpValue ?? this.xpValue,
+      isCompleted: isCompleted ?? this.isCompleted,
+      isApproved: isApproved ?? this.isApproved,
+      proofPhotoUrl: proofPhotoUrl ?? this.proofPhotoUrl,
+      isDaily: isDaily ?? this.isDaily,
+    );
   }
 }

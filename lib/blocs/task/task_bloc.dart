@@ -1,6 +1,4 @@
-// lib/blocs/task/task_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'task_event.dart';
 import 'task_state.dart';
 import '../../repositories/task_repository.dart';
@@ -14,6 +12,10 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<AddTaskEvent>(_onAddTask);
     on<UpdateTaskEvent>(_onUpdateTask);
     on<DeleteTaskEvent>(_onDeleteTask);
+    on<CompleteTaskEvent>(_onCompleteTask);
+    on<ApproveTaskEvent>(_onApproveTask);
+    on<UploadProofPhotoEvent>(_onUploadProofPhoto);
+    on<UncompleteTaskEvent>(_onUncompleteTask);
   }
 
   Future<void> _onLoadTasks(LoadTasksEvent event, Emitter<TaskState> emit) async {
@@ -29,9 +31,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Future<void> _onAddTask(AddTaskEvent event, Emitter<TaskState> emit) async {
     try {
       await taskRepository.addTask(event.task);
-      emit(TaskAddedState(task: event.task));
-      // Nach dem Hinzufügen die Aufgaben neu laden
-      add(LoadTasksEvent(userId: event.task.assignedTo));
+      add(LoadTasksEvent(userId: event.task.assignedBy));
     } catch (e) {
       emit(TaskErrorState(message: e.toString()));
     }
@@ -40,9 +40,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Future<void> _onUpdateTask(UpdateTaskEvent event, Emitter<TaskState> emit) async {
     try {
       await taskRepository.updateTask(event.task);
-      emit(TaskUpdatedState(task: event.task));
-      // Nach dem Aktualisieren die Aufgaben neu laden
-      add(LoadTasksEvent(userId: event.task.assignedTo));
+      add(LoadTasksEvent(userId: event.task.assignedBy));
     } catch (e) {
       emit(TaskErrorState(message: e.toString()));
     }
@@ -51,9 +49,51 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Future<void> _onDeleteTask(DeleteTaskEvent event, Emitter<TaskState> emit) async {
     try {
       await taskRepository.deleteTask(event.taskId);
-      emit(TaskDeletedState(taskId: event.taskId));
-      // Nach dem Löschen die Aufgaben neu laden
       add(LoadTasksEvent(userId: event.userId));
+    } catch (e) {
+      emit(TaskErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _onCompleteTask(CompleteTaskEvent event, Emitter<TaskState> emit) async {
+    try {
+      final updatedTask = event.task.copyWith(isCompleted: true);
+      await taskRepository.updateTask(updatedTask);
+      add(LoadTasksEvent(userId: event.task.assignedTo));
+    } catch (e) {
+      emit(TaskErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _onApproveTask(ApproveTaskEvent event, Emitter<TaskState> emit) async {
+    try {
+      final updatedTask = event.task.copyWith(isApproved: true);
+      await taskRepository.updateTask(updatedTask);
+      add(LoadTasksEvent(userId: event.task.assignedBy));
+    } catch (e) {
+      emit(TaskErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _onUploadProofPhoto(UploadProofPhotoEvent event, Emitter<TaskState> emit) async {
+    try {
+      final updatedTask = event.task.copyWith(proofPhotoUrl: event.photoUrl);
+      await taskRepository.updateTask(updatedTask);
+      add(LoadTasksEvent(userId: event.task.assignedTo));
+    } catch (e) {
+      emit(TaskErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _onUncompleteTask(UncompleteTaskEvent event, Emitter<TaskState> emit) async {
+    try {
+      final updatedTask = event.task.copyWith(
+        isCompleted: false,
+        isApproved: false,
+        proofPhotoUrl: null,  // Reset proof photo when uncompleting
+      );
+      await taskRepository.updateTask(updatedTask);
+      add(LoadTasksEvent(userId: event.task.assignedTo));
     } catch (e) {
       emit(TaskErrorState(message: e.toString()));
     }
